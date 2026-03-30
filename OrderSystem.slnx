@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/Services/" />
+  <Folder Name="/Services/Contracts/">
+    <Project Path="Services/Contracts/OrderSystem.Contracts/OrderSystem.Contracts.csproj" Id="16b26be8-fd2e-4ec5-beff-c89e88e202f1" />
+  </Folder>
+  <Folder Name="/Services/Inventory/">
+    <Project Path="Services/Inventory/Inventory.API/Inventory.API.csproj" />
+    <Project Path="Services/Inventory/Inventory.Application/Inventory.Application.csproj" />
+    <Project Path="Services/Inventory/Inventory.Domain/Inventory.Domain.csproj" />
+    <Project Path="Services/Inventory/Inventory.Infrastructure/Inventory.Infrastructure.csproj" />
+    <Project Path="Services/Inventory/Inventory.Presentation/Inventory.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/Services/Order/">
+    <Project Path="Services/Order/Order.API/Order.API.csproj" />
+    <Project Path="Services/Order/Order.Application/Order.Application.csproj" />
+    <Project Path="Services/Order/Order.Domain/Order.Domain.csproj" />
+    <Project Path="Services/Order/Order.Infrastructure/Order.Infrastructure.csproj" />
+    <Project Path="Services/Order/Order.Presentation/Order.Presentation.csproj" />
+  </Folder>
+</Solution>
