@@ -1,0 +1,43 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  order-service:
+    build:
+     context: .
+     dockerfile: Services/Order/Order.API/Dockerfile
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672
+    ports:
+      - "5000:8080"
+    volumes:
+      - order_data:/app/data
+
+  inventory.api:
+    build:
+     context: .
+     dockerfile: Services/Inventory/Inventory.API/Dockerfile
+    depends_on:
+      - rabbitmq
+      - redis
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - REDIS_HOST=redis
+      - CacheSettings__ConnectionString=redis:6379
+      - EventBusSettings__HostAddress=amqp://guest:guest@rabbitmq:5672
+    ports:
+      - "5001:8080"
+
+volumes:
+  order_data:
