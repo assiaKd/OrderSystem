@@ -28,6 +28,7 @@ stages:
         command: buildAndPush
         repository: assia008/order-service
         dockerfile: '$(Build.SourcesDirectory)/Services/Order/Order.API/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)'
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
@@ -37,6 +38,7 @@ stages:
         command: buildAndPush
         repository: assia008/inventory-service
         dockerfile: '$(Build.SourcesDirectory)/Services/Inventory/Inventory.API/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)'
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
