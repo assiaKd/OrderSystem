@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.67"
+      version = "~> 4.74"
     }
   }
 
@@ -64,6 +64,11 @@ resource "azurerm_container_app" "order_service" {
       external_enabled = true
       target_port      = 8080
       transport        = "Auto"
+	  
+	  traffic_weight {
+      percentage      = 100
+      latest_revision = true
+    }
     }
   template {
     container {
@@ -103,6 +108,11 @@ resource "azurerm_container_app" "inventory_service" {
       external_enabled = true
       target_port      = 8080
       transport        = "Auto"
+	  
+	  traffic_weight {
+      percentage      = 100
+      latest_revision = true
+    }
     }
   template {
     container {
