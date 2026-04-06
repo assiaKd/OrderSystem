@@ -37,7 +37,6 @@ resource "azurerm_redis_cache" "order_redis" {
   capacity            = 1
   family              = "C"
   sku_name            = "Standard"
-  enable_non_ssl_port = false
   minimum_tls_version = "1.2"
   public_network_access_enabled = true
 }
@@ -47,10 +46,6 @@ resource "azurerm_container_app_environment" "env" {
   name                = "order-system-2-env"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-
-  dapr {
-    enabled = false
-  }
 }
 
 resource "azurerm_container_app" "order_service" {
@@ -69,6 +64,8 @@ resource "azurerm_container_app" "order_service" {
       protocol = "HTTP"
     }
 	
+	
+	
 	 ingress {
     external_enabled = true        # Expose to public internet
     target_port      = 8080          # Container port
@@ -84,6 +81,12 @@ resource "azurerm_container_app" "order_service" {
       name  = "RABBITMQ_HOST"
       value = "rabbitmq"
     }
+  }
+   dapr {
+    enabled          = true
+    app_port         = 8080
+    app_protocol     = "http"
+    app_id           = "order-service-2"
   }
 }
 
@@ -118,6 +121,12 @@ resource "azurerm_container_app" "inventory_service" {
       name  = "RABBITMQ_HOST"
       value = "rabbitmq"
     }
+  }
+   dapr {
+    enabled          = true
+    app_port         = 8080
+    app_protocol     = "http"
+    app_id           = "inventory-service-2"
   }
 }
 
