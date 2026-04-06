@@ -150,17 +150,5 @@ resource "azurerm_container_app" "rabbitmq" {
         value = "guest"
       }
     }
-
-    ingress {
-      external_enabled = true
-      target_port      = 5672
-      transport        = "Auto"
-    }
-
-    ingress {
-      external_enabled = true
-      target_port      = 15672
-      transport        = "Auto"
-    }
   }
 }
