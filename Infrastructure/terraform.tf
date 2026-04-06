@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.74"
+      version = "~> 4.67"
     }
   }
 
@@ -87,13 +87,6 @@ resource "azurerm_container_app" "order_service" {
         value = "rabbitmq"
       }
     }
-
-    dapr {
-      enabled      = true
-      app_port     = 8080
-      app_protocol = "http"
-      app_id       = "order-service-2"
-    }
   }
 }
 
@@ -130,13 +123,6 @@ resource "azurerm_container_app" "inventory_service" {
         name  = "RABBITMQ_HOST"
         value = "rabbitmq"
       }
-    }
-
-    dapr {
-      enabled      = true
-      app_port     = 8080
-      app_protocol = "http"
-      app_id       = "inventory-service-2"
     }
   }
 }
