@@ -1,0 +1,45 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+  dockerRegistryServiceConnection:  'dockerhub-connection'
+ 
+ 
+stages:
+- stage: BuildAndPush
+  displayName:  Build & Push docker images
+  jobs:
+  - job: Build
+    displayName: Build & Push
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: Docker@2
+      displayName: Build & Push Order Service
+      inputs:
+        command: buildAndPush
+        repository: assia008/order-service
+        dockerfile: '$(Build.SourcesDirectory)/Services/Order/Order.API/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+    - task: Docker@2
+      displayName: Build & Push Inventary Service
+      inputs:
+        command: buildAndPush
+        repository: assia008/inventory-service
+        dockerfile: '$(Build.SourcesDirectory)/Services/Inventory/Inventory.API/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)'
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+
