@@ -55,10 +55,18 @@ stages:
         unzip terraform_1.7.0_linux_amd64.zip
         sudo mv terraform /usr/local/bin/
       displayName: Install Terraform
-
+    
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'Azure subscription 1(db43ec1d-2fa6-4e5a-a18e-232084b3da24)'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az account show
+          
     - script: |
         cd Infrastructure
         terraform init
         terraform plan -var="order_service_tag=$(tag)" -var="inventory_service_tag=$(tag)"
         terraform apply -auto-approve -var="order_service_tag=$(tag)" -var="inventory_service_tag=$(tag)"
-        displayName: Terraform Apply
+      displayName: Terraform Apply
