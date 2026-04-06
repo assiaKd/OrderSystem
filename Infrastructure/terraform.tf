@@ -60,6 +60,11 @@ resource "azurerm_container_app" "order_service" {
   location                     = azurerm_resource_group.rg.location
   revision_mode                = "Single"
 
+     ingress {
+      external_enabled = true
+      target_port      = 8080
+      transport        = "Auto"
+    }
   template {
     container {
       name   = "order-2"
@@ -78,12 +83,6 @@ resource "azurerm_container_app" "order_service" {
       }
     }
 
-    ingress {
-      external_enabled = true
-      target_port      = 8080
-      transport        = "Auto"
-    }
-
     dapr {
       enabled      = true
       app_port     = 8080
@@ -100,6 +99,11 @@ resource "azurerm_container_app" "inventory_service" {
   location                     = azurerm_resource_group.rg.location
   revision_mode                = "Single"
 
+     ingress {
+      external_enabled = true
+      target_port      = 8080
+      transport        = "Auto"
+    }
   template {
     container {
       name   = "inventory"
@@ -116,12 +120,6 @@ resource "azurerm_container_app" "inventory_service" {
         name  = "RABBITMQ_HOST"
         value = "rabbitmq"
       }
-    }
-
-    ingress {
-      external_enabled = true
-      target_port      = 8080
-      transport        = "Auto"
     }
 
     dapr {
