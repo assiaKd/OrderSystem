@@ -57,13 +57,12 @@ resource "azurerm_container_app" "order_service" {
   name                         = "order-service-2"
   container_app_environment_id = azurerm_container_app_environment.env.id
   resource_group_name          = azurerm_resource_group.rg.name
-  location                     = azurerm_resource_group.rg.location
   revision_mode                = "Single"
 
      ingress {
       external_enabled = true
       target_port      = 8080
-      transport        = "Auto"
+      transport        = "auto"
 	  
 	  traffic_weight {
       percentage      = 100
@@ -94,13 +93,12 @@ resource "azurerm_container_app" "inventory_service" {
   name                         = "inventory-service-2"
   container_app_environment_id = azurerm_container_app_environment.env.id
   resource_group_name          = azurerm_resource_group.rg.name
-  location                     = azurerm_resource_group.rg.location
   revision_mode                = "Single"
 
      ingress {
       external_enabled = true
       target_port      = 8080
-      transport        = "Auto"
+      transport        = "auto"
 	  
 	  traffic_weight {
       percentage      = 100
