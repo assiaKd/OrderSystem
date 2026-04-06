@@ -50,15 +50,15 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: UsePythonVersion@0
-      inputs:
-        versionSpec: '3.x'
-    - task: HashiCorpTerraform@1
-      inputs:
-        terraformVersion: '1.7.0'
     - script: |
-        cd  '$(Build.SourcesDirectory)/Infrastructure
+        curl -LO https://releases.hashicorp.com/terraform/1.7.0/terraform_1.7.0_linux_amd64.zip
+        unzip terraform_1.7.0_linux_amd64.zip
+        sudo mv terraform /usr/local/bin/
+      displayName: Install Terraform
+
+    - script: |
+        cd Infrastructure
         terraform init
         terraform plan -var="order_service_tag=$(tag)" -var="inventory_service_tag=$(tag)"
         terraform apply -auto-approve -var="order_service_tag=$(tag)" -var="inventory_service_tag=$(tag)"
-      displayName: Terraform Apply
+        displayName: Terraform Apply
