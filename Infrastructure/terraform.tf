@@ -23,7 +23,6 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
-
 locals {
   rabbit_user     = "guest"
   rabbit_password = "guest"
@@ -31,16 +30,15 @@ locals {
 }
 
 resource "azurerm_redis_cache" "order_redis" {
-  name                = "order-redis-2"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  capacity            = 1
-  family              = "C"
-  sku_name            = "Standard"
-  minimum_tls_version = "1.2"
+  name                        = "order-redis-2"
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  capacity                    = 1
+  family                      = "C"
+  sku_name                    = "Standard"
+  minimum_tls_version          = "1.2"
   public_network_access_enabled = true
 }
-
 
 resource "azurerm_container_app_environment" "env" {
   name                = "order-system-2-env"
@@ -49,115 +47,120 @@ resource "azurerm_container_app_environment" "env" {
 }
 
 resource "azurerm_container_app" "order_service" {
-  name                      = "order-service-2"
+  name                         = "order-service-2"
   container_app_environment_id = azurerm_container_app_environment.env.id
-  resource_group_name       = azurerm_resource_group.rg.name
-  location                  = azurerm_resource_group.rg.location
+  resource_group_name          = azurerm_resource_group.rg.name
+  location                     = azurerm_resource_group.rg.location
+  revision_mode                = "Single"
 
-  container {
-    name   = "order-2"
-    image = "assia008/order-service:${var.order_service_tag}"
-    cpu    = 0.5
-    memory = "1Gi"
-	 ports {
-      port     = 8080
-      protocol = "HTTP"
-    }
-	
-	
-	
-	 ingress {
-    external_enabled = true        # Expose to public internet
-    target_port      = 8080          # Container port
-    transport        = "Auto"      # HTTP/HTTPS detection
-  }
+  template {
+    container {
+      name   = "order-2"
+      image  = "assia008/order-service:${var.order_service_tag}"
+      cpu    = 0.5
+      memory = "1Gi"
 
-    env {
-      name  = "EventBusSettings__HostAddress"
-      value = "amqp://${local.rabbit_user}:${local.rabbit_password}@${local.rabbit_host}:5672?heartbeat=60"
+      env {
+        name  = "EventBusSettings__HostAddress"
+        value = "amqp://${local.rabbit_user}:${local.rabbit_password}@${local.rabbit_host}:5672?heartbeat=60"
+      }
+
+      env {
+        name  = "RABBITMQ_HOST"
+        value = "rabbitmq"
+      }
     }
 
-    env {
-      name  = "RABBITMQ_HOST"
-      value = "rabbitmq"
+    ingress {
+      external_enabled = true
+      target_port      = 8080
+      transport        = "Auto"
     }
-  }
-   dapr {
-    enabled          = true
-    app_port         = 8080
-    app_protocol     = "http"
-    app_id           = "order-service-2"
+
+    dapr {
+      enabled      = true
+      app_port     = 8080
+      app_protocol = "http"
+      app_id       = "order-service-2"
+    }
   }
 }
 
 resource "azurerm_container_app" "inventory_service" {
-  name                      = "inventory-service-2"
+  name                         = "inventory-service-2"
   container_app_environment_id = azurerm_container_app_environment.env.id
-  resource_group_name       = azurerm_resource_group.rg.name
-  location                  = azurerm_resource_group.rg.location
+  resource_group_name          = azurerm_resource_group.rg.name
+  location                     = azurerm_resource_group.rg.location
+  revision_mode                = "Single"
 
-  container {
-    name   = "inventory"
-    image = "assia008/inventory-service:${var.inventory_service_tag}"
-    cpu    = 0.5
-    memory = "1Gi"
-	ports {
-      port     = 8080
-      protocol = "HTTP"
-    }
-	
-	ingress {
-    external_enabled = true        # Expose to public internet
-    target_port      = 8080          # Container port
-    transport        = "Auto"      # HTTP/HTTPS detection
-    }
+  template {
+    container {
+      name   = "inventory"
+      image  = "assia008/inventory-service:${var.inventory_service_tag}"
+      cpu    = 0.5
+      memory = "1Gi"
 
-    env {
-      name  = "EventBusSettings__HostAddress"
-      value = "amqp://${local.rabbit_user}:${local.rabbit_password}@${local.rabbit_host}:5672?heartbeat=60"
+      env {
+        name  = "EventBusSettings__HostAddress"
+        value = "amqp://${local.rabbit_user}:${local.rabbit_password}@${local.rabbit_host}:5672?heartbeat=60"
+      }
+
+      env {
+        name  = "RABBITMQ_HOST"
+        value = "rabbitmq"
+      }
     }
 
-    env {
-      name  = "RABBITMQ_HOST"
-      value = "rabbitmq"
+    ingress {
+      external_enabled = true
+      target_port      = 8080
+      transport        = "Auto"
     }
-  }
-   dapr {
-    enabled          = true
-    app_port         = 8080
-    app_protocol     = "http"
-    app_id           = "inventory-service-2"
+
+    dapr {
+      enabled      = true
+      app_port     = 8080
+      app_protocol = "http"
+      app_id       = "inventory-service-2"
+    }
   }
 }
 
 resource "azurerm_container_app" "rabbitmq" {
-  name                      = "rabbitmq2"
+  name                         = "rabbitmq2"
   container_app_environment_id = azurerm_container_app_environment.env.id
-  resource_group_name       = azurerm_resource_group.rg.name
-  location                  = azurerm_resource_group.env.location
+  resource_group_name          = azurerm_resource_group.rg.name
+  location                     = azurerm_resource_group.rg.location
+  revision_mode                = "Single"
 
-  container {
-    name   = "rabbitmq2"
-    image  = "rabbitmq:3-management"
-    cpu    = 0.5
-    memory = "1Gi"
+  template {
+    container {
+      name   = "rabbitmq2"
+      image  = "rabbitmq:3-management"
+      cpu    = 0.5
+      memory = "1Gi"
 
-    ports {
-      external = 5672
+      env {
+        name  = "RABBITMQ_DEFAULT_USER"
+        value = "guest"
+      }
+
+      env {
+        name  = "RABBITMQ_DEFAULT_PASS"
+        value = "guest"
+      }
     }
 
-    ports {
-      external = 15672
+    ingress {
+      external_enabled = true
+      target_port      = 5672
+      transport        = "Auto"
     }
 
-    env {
-      name  = "RABBITMQ_DEFAULT_USER"
-      value = "guest"
-    }
-
-    env {
-      name  = "RABBITMQ_DEFAULT_PASS"
-      value = "guest"
+    ingress {
+      external_enabled = true
+      target_port      = 15672
+      transport        = "Auto"
     }
   }
 }
