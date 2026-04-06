@@ -9,6 +9,10 @@ terraform {
   required_version = ">= 1.3"
 }
 
+provider "azurerm" {
+  features {}
+}
+
 variable "resource_group_name" {
   default = "order-system-2-rg"
 }
